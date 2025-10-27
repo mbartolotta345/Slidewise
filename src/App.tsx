@@ -129,6 +129,12 @@ function App() {
       return false;
     }
 
+    //when a square is clicked
+    function onCellClick(r: number, c:number){
+      //make the square selected
+      board[r][c].selected = true;
+      console.log ("SQUARE" + r + c + "is clicked!");
+    }
 
 /**
 // Store the board in React state
@@ -167,6 +173,7 @@ function App() {
             <div
               key={`${r}-${c}`}
               className={`cell ${cell.state}`}
+              onClick={() => onCellClick(r, c)}
             >
               {cell.value ?? ""}
             </div>
