@@ -66,15 +66,16 @@ board[4][3].value = 'O';
 
 
 function App() {
+
+  //initialize board dimensions
+  const BOARD_LENGTH = 4;
+  const BOARD_HEIGHT = 5;
+
   //make the board
   const [board, setBoard] = useState<Square[][]>(() =>
     makeInitialBoard(BOARD_HEIGHT, BOARD_LENGTH)
   );
   const [moves, setMoves] = useState(0);
-
-  //initialize board dimensions
-  const BOARD_LENGTH = 4;
-  const BOARD_HEIGHT = 5;
 
 
   //Will swap a filled square with an empty square to slide
@@ -121,13 +122,13 @@ function App() {
   }
 
 */
-
+/**
 // Store the board in React state
   const [board] = useState<Square[][]>(() =>
     makeInitialBoard(BOARD_HEIGHT, BOARD_LENGTH)
   );
 
-
+*/
 
   // Prints the board in console when it changes
 
