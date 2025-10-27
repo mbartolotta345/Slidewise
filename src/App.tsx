@@ -70,6 +70,8 @@ function App() {
   //initialize board dimensions
   const BOARD_LENGTH = 4;
   const BOARD_HEIGHT = 5;
+  //initialize the correct words
+  const correct_words = ["GOLF","WORK"];
 
   //make the board
   const [board, setBoard] = useState<Square[][]>(() =>
@@ -105,16 +107,36 @@ function App() {
         squareB.value = tempValue;
 
         setMoves((prev) => prev + 1);
+        checkForWin(newBoard);
       }
 
       return newBoard;
     });
   }
+
+  //Checks for win after every swap
+  function checkForWin(board: Square[][]): boolean {
+    let firstWord = "";
+    let secondWord = "";
+    for (let i=0;i<BOARD_LENGTH;i++){
+      firstWord += (board[0][i].value)
+    }
+    for (let i=0;i<BOARD_LENGTH;i++){
+      secondWord += (board[BOARD_HEIGHT - 1][i].value)
+    }
+
+      if (firstWord === correct_words[0] && secondWord === correct_words[1] ||
+        firstWord === correct_words[1] && secondWord === correct_words[0]) {
+        console.log("You win!");
+        return true;
+      }
+      return false;
+    }
+
 /**
  * For future use:
   
-  //initialize the correct words
-  const correct_words = ["GOLF","WORK"];
+ 
 
   //update function
   function updateSquare(row, col, value) {
