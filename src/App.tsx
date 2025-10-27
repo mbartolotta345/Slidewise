@@ -23,6 +23,8 @@ function makeInitialBoard(height: number, length: number): Square[][] {
   const board = Array.from({ length: height }, () =>
     Array.from({ length }, () => new Square())
   );
+
+  //Barrier Blocks
   board[1][0].state = "barrier";
   board[1][2].state = "barrier";
   board[1][3].state = "barrier";
@@ -31,6 +33,32 @@ function makeInitialBoard(height: number, length: number): Square[][] {
   board[3][0].state = "barrier";
   board[3][2].state = "barrier";
   board[3][3].state = "barrier";
+
+  // Letter Blocks
+board[0][0].state = 'filled';
+board[0][0].value = 'F';
+
+board[0][1].state = 'filled';
+board[0][1].value = 'L';
+
+board[0][2].state = 'filled';
+board[0][2].value = 'W';
+
+board[0][3].state = 'filled';
+board[0][3].value = 'K';
+
+board[4][0].state = 'filled';
+board[4][0].value = 'R';
+
+board[4][1].state = 'filled';
+board[4][1].value = 'G';
+
+board[4][2].state = 'filled';
+board[4][2].value = 'O';
+
+board[4][3].state = 'filled';
+board[4][3].value = 'O';
+
   return board;
 }
 
