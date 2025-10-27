@@ -1,8 +1,32 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.board {
+  margin: 20px auto;   /* top/bottom margin 20px, auto centers horizontally */
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), 50px);
+  gap: 6px;
 }
 
+.cell {
+  width: 50px;
+  height: 50px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  border-radius: 6px;
+  user-select: none;
+}
 
+.cell.empty {
+  background-color: #f7f7f7;
+}
+
+.cell.filled {
+  background-color: white;
+  color: black;
+}
+
+.cell.barrier {
+  background-color: #444;
+  color: white;
+}

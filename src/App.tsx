@@ -1,7 +1,5 @@
 import { useState, useEffect } from 'react';
-
 import './App.css'
-
 
 class Square {
   state: "empty" | "filled" | "barrier";
@@ -18,8 +16,6 @@ class Square {
     this.selected = selected;
   }
 }
-
-
 
 function makeInitialBoard(height: number, length: number): Square[][] {
   const board = Array.from({ length: height }, () =>
@@ -133,17 +129,7 @@ function App() {
       return false;
     }
 
-/**
- * For future use:
-  
- 
 
-  //update function
-  function updateSquare(row, col, value) {
-
-  }
-
-*/
 /**
 // Store the board in React state
   const [board] = useState<Square[][]>(() =>
@@ -159,9 +145,33 @@ function App() {
     console.table(board.map(row => row.map(cell => cell.state)));
     console.log(board);
   }, [board]);
-  return <div className="App">
-    <p>Moves: {moves}</p>
-    </div>;
+
+
+  return (
+    <div className="App">
+      <p>Moves: {moves}</p>
+
+      <div
+        className="board"
+        style={{
+          display: "grid",
+          gridTemplateColumns: `repeat(${BOARD_LENGTH}, 50px)`,
+          gap: "6px",
+        }}
+      >
+        {board.map((row, r) =>
+          row.map((cell, c) => (
+            <div
+              key={`${r}-${c}`}
+              className={`cell ${cell.state}`}
+            >
+              {cell.value ?? ""}
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default App;
