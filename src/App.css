@@ -1,9 +1,21 @@
+.App {
+  height: 100vh;                 /* full viewport height */
+  display: flex;                 /* enable flexbox */
+  flex-direction: column;        /* stack elements vertically */
+  justify-content: center;       /* vertical centering */
+  align-items: center;           /* horizontal centering */
+  text-align: center;            /* center text inside */
+}
+
+
 .board {
-  margin: 20px auto;   /* top/bottom margin 20px, auto centers horizontally */
   display: grid;
   grid-template-columns: repeat(var(--cols, 4), 50px);
   gap: 6px;
+  justify-content: center;   /* center grid tracks */
+  width: max-content;        /* grid width = its content */
 }
+
 
 .cell {
   width: 50px;
@@ -18,15 +30,20 @@
 }
 
 .cell.empty {
-  background-color: #f7f7f7;
+  background-color: #F1E9F0;
 }
 
 .cell.filled {
-  background-color: white;
-  color: black;
+  background-color: #F1E9F0;
+  color: #1B1B1B;
+}
+
+.cell_selected {
+  color: #1B1B1B;
+  background-color: #F5CD1E;
 }
 
 .cell.barrier {
-  background-color: #444;
-  color: white;
+  background-color: #E8B1F3;
+  color: #F1E9F0;
 }

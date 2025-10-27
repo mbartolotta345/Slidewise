@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import './App.css'
+import "./App.css";
 
 class Square {
   state: "empty" | "filled" | "barrier";
@@ -149,15 +149,18 @@ function App() {
 
   return (
     <div className="App">
+      <h1>Slidewise</h1>
+      <h2>{new Date().toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}</h2>
       <p>Moves: {moves}</p>
 
       <div
         className="board"
-        style={{
+        /**style={{
           display: "grid",
           gridTemplateColumns: `repeat(${BOARD_LENGTH}, 50px)`,
           gap: "6px",
-        }}
+          justifyContent: "center",
+        }}*/
       >
         {board.map((row, r) =>
           row.map((cell, c) => (
