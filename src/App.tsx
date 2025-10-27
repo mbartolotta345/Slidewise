@@ -19,6 +19,8 @@ class Square {
   }
 }
 
+
+
 function makeInitialBoard(height: number, length: number): Square[][] {
   const board = Array.from({ length: height }, () =>
     Array.from({ length }, () => new Square())
@@ -64,19 +66,52 @@ board[4][3].value = 'O';
 
 
 function App() {
-  
+  //make the board
+  const [board, setBoard] = useState<Square[][]>(() =>
+    makeInitialBoard(BOARD_HEIGHT, BOARD_LENGTH)
+  );
+  const [moves, setMoves] = useState(0);
+
   //initialize board dimensions
   const BOARD_LENGTH = 4;
   const BOARD_HEIGHT = 5;
 
-  //make the board
-  makeInitialBoard(BOARD_HEIGHT, BOARD_LENGTH);
 
-  
+  //Will swap a filled square with an empty square to slide
+   function squareSlide(row1: number, col1: number, row2: number, col2: number) {
+    setBoard((prevBoard: Square[][]) => {
+      // deep copy while preserving Square type
+      const newBoard: Square[][] = prevBoard.map((row: Square[]) =>
+        row.map((cell: Square) => new Square(cell.state, cell.value, cell.selected))
+      );
+
+      const squareA = newBoard[row1][col1];
+      const squareB = newBoard[row2][col2];
+
+      // Only swap if one is filled and the other is empty
+      const canSwap =
+        (squareA.state === "filled" && squareB.state === "empty") ||
+        (squareA.state === "empty" && squareB.state === "filled");
+
+      if (canSwap) {
+        const tempState = squareA.state;
+        const tempValue = squareA.value;
+
+        squareA.state = squareB.state;
+        squareA.value = squareB.value;
+
+        squareB.state = tempState;
+        squareB.value = tempValue;
+
+        setMoves((prev) => prev + 1);
+      }
+
+      return newBoard;
+    });
+  }
 /**
  * For future use:
-  //initialize letters in the board squares that are usuable
-
+  
   //initialize the correct words
   const correct_words = ["GOLF","WORK"];
 
@@ -84,6 +119,7 @@ function App() {
   function updateSquare(row, col, value) {
 
   }
+
 */
 
 // Store the board in React state
@@ -100,7 +136,9 @@ function App() {
     console.table(board.map(row => row.map(cell => cell.state)));
     console.log(board);
   }, [board]);
-  return <div className="App">Testing</div>;
+  return <div className="App">
+    <p>Moves: {moves}</p>
+    </div>;
 }
 
 export default App;
