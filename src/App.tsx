@@ -33,15 +33,26 @@ function makeInitialBoard(height: number, length: number): Square[][] {
   board[3][3].state = "barrier";
 
   // Letter Blocks
-  board[0][0].state = "filled"; board[0][0].value = "F";
-  board[0][1].state = "filled"; board[0][1].value = "L";
-  board[0][2].state = "filled"; board[0][2].value = "W";
-  board[0][3].state = "filled"; board[0][3].value = "K";
+  // board[0][0].state = "filled"; board[0][0].value = "F";
+  // board[0][1].state = "filled"; board[0][1].value = "L";
+  // board[0][2].state = "filled"; board[0][2].value = "W";
+  // board[0][3].state = "filled"; board[0][3].value = "K";
 
-  board[4][0].state = "filled"; board[4][0].value = "R";
-  board[4][1].state = "filled"; board[4][1].value = "G";
-  board[4][2].state = "filled"; board[4][2].value = "O";
-  board[4][3].state = "filled"; board[4][3].value = "O";
+  // board[4][0].state = "filled"; board[4][0].value = "R";
+  // board[4][1].state = "filled"; board[4][1].value = "G";
+  // board[4][2].state = "filled"; board[4][2].value = "O";
+  // board[4][3].state = "filled"; board[4][3].value = "O";
+
+  //Testing win condition
+  board[0][0].state = "filled"; board[0][0].value = "G";
+  board[0][1].state = "filled"; board[0][1].value = "O";
+  board[0][2].state = "filled"; board[0][2].value = "L";
+  board[0][3].state = "filled"; board[0][3].value = "F";
+
+  board[4][0].state = "filled"; board[4][0].value = "W";
+  board[4][1].state = "filled"; board[4][1].value = "O";
+  board[4][2].state = "filled"; board[4][2].value = "R";
+  board[4][3].state = "filled"; board[4][3].value = "K";
 
   return board;
 }
