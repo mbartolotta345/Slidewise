@@ -1,21 +1,18 @@
 .App {
-  height: 100vh;                 /* full viewport height */
-  display: flex;                 /* enable flexbox */
-  flex-direction: column;        /* stack elements vertically */
-  justify-content: center;       /* vertical centering */
-  align-items: center;           /* horizontal centering */
-  text-align: center;            /* center text inside */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
 }
-
 
 .board {
   display: grid;
   grid-template-columns: repeat(var(--cols, 4), 50px);
   gap: 6px;
-  justify-content: center;   /* center grid tracks */
-  width: max-content;        /* grid width = its content */
+  justify-content: center;
 }
-
 
 .cell {
   width: 50px;
@@ -38,12 +35,13 @@
   color: #1B1B1B;
 }
 
-.cell_selected {
-  color: #1B1B1B;
-  background-color: #F5CD1E;
-}
-
 .cell.barrier {
   background-color: #E8B1F3;
   color: #F1E9F0;
+}
+
+.cell.selected {
+  background-color: #F5CD1E;
+  color: #1B1B1B;
+  outline: 2px solid #1B1B1B;
 }
