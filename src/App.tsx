@@ -121,7 +121,6 @@ export default function App() {
         setMoves((m) => m + 1);
         checkForWin(newBoard);
       }
-
       return newBoard;
     });
 
@@ -170,15 +169,25 @@ export default function App() {
 
   return (
     <div className="App">
-      <h1>Slidewise</h1>
-      <h2>
+      <div className="header">
+      <h1 className="title">Slidewise</h1>
+      <span className="date">
         {new Date().toLocaleDateString("en-US", {
           month: "long",
           day: "numeric",
           year: "numeric",
         })}
-      </h2>
-      <p>Moves: {moves}</p>
+      </span>
+    </div>
+
+      <h3>Slide letters to create two words!</h3>
+      <div className="game-area">
+        <div className="move-counter">
+        <p>Moves: {moves}</p>
+        </div>
+
+        
+      <div className="board-wrapper">
 
       <div
         className="board">
@@ -194,6 +203,9 @@ export default function App() {
           ))
         )}
       </div>
+      </div>
+
+    </div>
     </div>
   );
 }
