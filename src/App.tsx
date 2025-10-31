@@ -32,7 +32,7 @@ function makeInitialBoard(height: number, length: number): Square[][] {
   board[3][2].state = "barrier";
   board[3][3].state = "barrier";
 
-  // Letter Blocks
+  // Letter Blocks -- Hard
   // board[0][0].state = "filled"; board[0][0].value = "F";
   // board[0][1].state = "filled"; board[0][1].value = "L";
   // board[0][2].state = "filled"; board[0][2].value = "W";
@@ -44,16 +44,28 @@ function makeInitialBoard(height: number, length: number): Square[][] {
   // board[4][3].state = "filled"; board[4][3].value = "O";
 
   //Testing win condition
+  // board[0][0].state = "filled"; board[0][0].value = "G";
+  // board[0][1].state = "filled"; board[0][1].value = "O";
+  // board[0][2].state = "filled"; board[0][2].value = "L";
+  // board[0][3].state = "filled"; board[0][3].value = "F";
+
+  // board[4][0].state = "filled"; board[4][0].value = "W";
+  // board[4][1].state = "filled"; board[4][1].value = "O";
+  // board[4][2].state = "filled"; board[4][2].value = "R";
+  // board[4][3].state = "filled"; board[4][3].value = "K";
+
+//Testing win condition -- Easy
   board[0][0].state = "filled"; board[0][0].value = "G";
-  board[0][1].state = "filled"; board[0][1].value = "O";
-  board[0][2].state = "filled"; board[0][2].value = "L";
+  board[0][1].state = "filled"; board[0][1].value = "L";
+  board[0][2].state = "filled"; board[0][2].value = "O";
   board[0][3].state = "filled"; board[0][3].value = "F";
 
-  board[4][0].state = "filled"; board[4][0].value = "W";
-  board[4][1].state = "filled"; board[4][1].value = "O";
+  board[4][0].state = "filled"; board[4][0].value = "O";
+  board[4][1].state = "filled"; board[4][1].value = "W";
   board[4][2].state = "filled"; board[4][2].value = "R";
   board[4][3].state = "filled"; board[4][3].value = "K";
 
+  
   return board;
 }
 
@@ -130,36 +142,40 @@ export default function App() {
 
   function onCellClick(r: number, c: number) {
     const cell = board[r][c];
-    if (cell.state === "barrier") return; // ignore barriers
+  if (cell.state === "barrier") return; // ignore barriers
+  if (hasWon) return; // ignore clicks after win
 
-    //Select first square
-    if (!selected) {
-      setSelected({ r, c });
-      setBoard((prev) => {
-        const newBoard = cloneBoard(prev);
-        for (let i = 0; i < newBoard.length; i++) {
-          for (let j = 0; j < newBoard[i].length; j++) {
-            newBoard[i][j].selected = i === r && j === c;
-          }
+  // first tile
+  if (!selected) {
+    // only allow selecting a filled tile, not an empty one
+    if (cell.state !== "filled") return;
+
+    setSelected({ r, c });
+    setBoard((prev) => {
+      const newBoard = cloneBoard(prev);
+      for (let i = 0; i < newBoard.length; i++) {
+        for (let j = 0; j < newBoard[i].length; j++) {
+          newBoard[i][j].selected = i === r && j === c;
         }
-        return newBoard;
-      });
-      return;
-    }
+      }
+      return newBoard;
+    });
+    return;
+  }
 
-    //If clicked same cell then deselect
-    if (selected.r === r && selected.c === c) {
-      setSelected(null);
-      setBoard((prev) => {
-        const newBoard = cloneBoard(prev);
-        newBoard[r][c].selected = false;
-        return newBoard;
-      });
-      return;
-    }
+  // ignore if clicking on the same cell again
+  if (selected.r === r && selected.c === c) {
+    setSelected(null);
+    setBoard((prev) => {
+      const newBoard = cloneBoard(prev);
+      newBoard[r][c].selected = false;
+      return newBoard;
+    });
+    return;
+  }
 
-    //Second cell clicked
-    squareSlide(selected.r, selected.c, r, c);
+  // clicking on another cell
+  squareSlide(selected.r, selected.c, r, c);
   }
 
   useEffect(() => {
