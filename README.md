@@ -18,7 +18,7 @@ You start with a 5×4 grid of letter and barrier blocks.
 - Rearrange letters to form two valid words (one on the top row and one on the bottom).  
 - When both words are correct, the game celebrates your success with a **“Great Job!”** message and freezes the board.
 
-![demo gif.gif](./screenshots/)
+![demo gif](./screenshots/)
 
 ---
 
