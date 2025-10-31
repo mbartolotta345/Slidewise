@@ -19,10 +19,8 @@ You start with a 5×4 grid of letter and barrier blocks.
 - When both words are correct, the game celebrates your success with a **“Great Job!”** message and freezes the board.
 
 <p align="center">
-  ![Slidewise Demo](screenshots/demo.gif)
+  <img src="screenshots/demo.gif" alt="Slidewise Demo" width="500">
 </p>
-
-
 
 ---
 
