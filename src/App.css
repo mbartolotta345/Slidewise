@@ -43,19 +43,41 @@ html, body, #root {
   justify-self: center;          /* keep board centered */
 }
 
-/* Counter lives in the left column, right-aligned near the board */
-.move-counter {
-  grid-column: 1;
-  justify-self: end;             /* hug the board’s left side */
-  margin-right: 24px;            /* gap between counter and board */
-  font-size: 1.2rem;
-  font-weight: 500;
+.instructions{
+  font-size: 1.5rem;      /* slightly smaller */
+  font-weight: normal;    /* unbolded */
+  color: #1B1B1B;         /* same color or tweak slightly if you want contrast */
 }
 
 .move-counter {
-  font-size: 1.2rem;
+  display: flex;
+  flex-direction: column;
+  width: 50%;                 /* adjust width as needed */
+  border: 2px solid #F1E9F0;    /* gray outline */
+  border-radius: 8px;
+  overflow: hidden;             /* keeps rounded corners clean */
+  text-align: center;
+  font-family: sans-serif;
+  margin-left: 45%;
+}
+
+/* Top section (purple background) */
+.counter-top {
+  background-color: #E8B1F3;    /* your purple tone */
+  color: #1B1B1B;               /* dark readable text */
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 8px 0;
+  
+}
+
+/* Bottom section (white background with number) */
+.counter-bottom {
+  background-color: #FFFFFF;
   color: #1B1B1B;
-  font-weight: 500;
+  font-size: 2rem;
+  font-weight: 700;
+  padding: 12px 0;
 }
 
 .move-counter p {
@@ -134,4 +156,32 @@ html, body, #root {
 .cell.selected {
   background-color: #F5CD1E;
   color: #1B1B1B;
+}
+
+/* Win Message*/
+
+.win-slot {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.win-message {
+  font-size: 1.5rem;
+  font-weight:normal;
+  color: #1B1B1B;
+  text-align: center;
+  animation: popIn 0.4s ease-out;
+}
+
+@keyframes popIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
 }

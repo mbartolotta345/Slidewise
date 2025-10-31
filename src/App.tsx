@@ -62,6 +62,8 @@ export default function App() {
   const BOARD_LENGTH = 4;
   const BOARD_HEIGHT = 5;
   const correct_words = ["GOLF", "WORK"];
+  const [hasWon, setHasWon] = useState(false);
+
 
   // State
   const [board, setBoard] = useState<Square[][]>(() =>
@@ -90,42 +92,40 @@ export default function App() {
       (firstWord === correct_words[1] && secondWord === correct_words[0]);
 
     if (win) {
-      console.log("You win!");
+      setHasWon(true);
     }
     return win;
   }
 
-  function squareSlide(r1: number, c1: number, r2: number, c2: number) {
-    setBoard((prev) => {
-      const newBoard = cloneBoard(prev);
+  function squareSlide(r1: number, c1: number, r2: number, c2: number) {  
+    const newBoard = cloneBoard(board);
 
-      const A = newBoard[r1][c1];
-      const B = newBoard[r2][c2];
+    const A = newBoard[r1][c1];
+    const B = newBoard[r2][c2];
 
-      const canSwap =
-        (A.state === "filled" && B.state === "empty") ||
-        (A.state === "empty" && B.state === "filled");
+    const canSwap =
+      (A.state === "filled" && B.state === "empty") ||
+      (A.state === "empty" && B.state === "filled");
 
-      if (canSwap) {
-        const tmpState = A.state;
-        const tmpValue = A.value;
+    if (canSwap) {
+      // swap
+      const tmpState = A.state;
+      const tmpValue = A.value;
+      A.state = B.state; A.value = B.value;
+      B.state = tmpState; B.value = tmpValue;
 
-        A.state = B.state;
-        A.value = B.value;
-        B.state = tmpState;
-        B.value = tmpValue;
+      // clear selection
+      A.selected = false;
+      B.selected = false;
 
-        A.selected = false;
-        B.selected = false;
+      // update
+      setBoard(newBoard);
+      setMoves(m => m + 1);
+      checkForWin(newBoard);
+  }
 
-        setMoves((m) => m + 1);
-        checkForWin(newBoard);
-      }
-      return newBoard;
-    });
-
-    // clear first selection coordinate
-    setSelected(null);
+  // clear first selection either way
+  setSelected(null);
   }
 
   function onCellClick(r: number, c: number) {
@@ -180,10 +180,11 @@ export default function App() {
       </span>
     </div>
 
-      <h3>Slide letters to create two words!</h3>
+      <div className="instructions">Slide letters to create two words!</div>
       <div className="game-area">
         <div className="move-counter">
-        <p>Moves: {moves}</p>
+          <div className="counter-top">NUMBER OF SLIDES</div>
+          <div className="counter-bottom">{moves}</div>
         </div>
 
         
@@ -196,15 +197,21 @@ export default function App() {
             <div
               key={`${r}-${c}`}
               className={`cell ${cell.state} ${cell.selected ? "selected" : ""}`}
-              onClick={() => onCellClick(r, c)}
+              onClick={() => {
+                if (!hasWon){
+                  onCellClick(r, c)}}}
             >
               {cell.value ?? ""}
             </div>
           ))
         )}
+        
+      </div>
+      <div className="win-slot" aria-live="polite">
+    {hasWon && <p className="win-message">Great Job!</p>}
       </div>
       </div>
-
+        
     </div>
     </div>
   );
