@@ -26,11 +26,11 @@ You start with a 5×4 grid of letter and barrier blocks.
 
 ## Features
 
-- **Dynamic grid logic** — each square tracks state (`empty`, `filled`, `barrier`)  
-- **Move counter** — tracks number of slides with a move counter
-- **Win detection** — checks for correct words dynamically
-- **Responsive layout** — centered game board, GitHub Pages support
-- **Victory screen** — animated “Great Job!” message
+- **Dynamic grid logic:** each square tracks state (`empty`, `filled`, `barrier`)  
+- **Move counter:** tracks the number of slides with a move counter
+- **Win detection:** checks for correct words dynamically
+- **Responsive layout:** centered game board, GitHub Pages support
+- **Victory screen:** animated “Great Job!” message
 
 ---
 
