@@ -5,6 +5,8 @@ Players slide letter tiles to form two hidden words!
 
 **Play Now:** [https://mbartolotta345.github.io/Slidewise/](https://mbartolotta345.github.io/Slidewise/)
 
+I'm Michelle[https://github.com/mbartolotta345] and I created Slidewise for my internship application to NYT to demonstrate my interest in front-end development.
+
 ---
 
 ## Overview
