@@ -45,14 +45,21 @@ button {
   min-height: 72px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 18px;
+  justify-content: flex-start;
   padding: 14px clamp(18px, 4vw, 48px);
   border-bottom: 1px solid var(--ink);
   background: rgba(255, 255, 255, 0.92);
+  position: relative;
+  z-index: 5;
 }
 
 .brand-lockup {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.title-row {
   display: flex;
   align-items: baseline;
   gap: 12px;
@@ -61,52 +68,114 @@ button {
 .title {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 4vw, 3.35rem);
-  line-height: 0.92;
+  font-size: clamp(1.8rem, 3.2vw, 2.55rem);
+  line-height: 1;
   letter-spacing: 0;
 }
 
 .date {
-  color: var(--muted);
-  font-size: clamp(0.82rem, 1.6vw, 0.98rem);
+  color: var(--ink);
+  font-size: clamp(0.74rem, 1.3vw, 0.9rem);
   font-weight: 700;
   white-space: nowrap;
 }
 
-.game-shell {
-  width: min(1080px, calc(100vw - 32px));
-  margin: 0 auto;
-  padding: clamp(28px, 6vw, 64px) 0 38px;
+.creator {
+  margin: 0;
+  color: var(--ink);
+  font-size: clamp(0.7rem, 1.3vw, 0.82rem);
+  font-weight: 300;
 }
 
-.intro {
-  max-width: 620px;
-  margin: 0 auto clamp(24px, 5vw, 42px);
+.game-shell {
+  position: relative;
+  width: min(1080px, calc(100vw - 32px));
+  margin: 0 auto;
+  padding: clamp(28px, 5vw, 54px) 0 38px;
+}
+
+.title-card {
+  position: fixed;
+  top: 72px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: var(--purple);
+  opacity: 1;
+  transition:
+    opacity 360ms ease,
+    transform 360ms ease;
+}
+
+.title-card.leaving {
+  opacity: 0;
+  transform: translateY(-8px);
+  pointer-events: none;
+}
+
+.title-card-content {
+  display: grid;
+  justify-items: center;
+  gap: 13px;
   text-align: center;
 }
 
-.kicker {
-  margin: 0 0 7px;
-  color: var(--muted);
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.intro h2 {
+.title-card h2 {
   margin: 0;
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(2rem, 5.4vw, 4.4rem);
-  line-height: 0.98;
+  font-size: clamp(1.6rem, 6vw, 4rem);
+  line-height: 0.9;
   letter-spacing: 0;
 }
 
-.subhead {
-  max-width: 480px;
-  margin: 14px auto 0;
-  color: var(--muted);
-  font-size: clamp(0.95rem, 2vw, 1.08rem);
+.title-card-tagline {
+  margin: 0 0 8px;
+  font-size: clamp(1.35rem, 3.2vw, 2rem);
+  font-weight: 300;
+}
+
+.title-card button {
+  min-width: 148px;
+  min-height: 52px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--ink);
+  color: #ffffff;
+  font-weight: 400;
+  cursor: pointer;
+  transition:
+    transform 150ms ease,
+    background-color 150ms ease;
+}
+
+.title-card button:hover {
+  transform: translateY(-1px) scale(1.02);
+}
+
+.title-card-meta-group {
+  display: grid;
+  gap: 2px;
+  margin-top: 2px;
+}
+
+.title-card-date,
+.title-card-credit {
+  margin: 0;
+  color: var(--ink);
+}
+
+.title-card-date {
+  font-size: clamp(0.8rem, 1.5vw, 0.95rem);
+  font-weight: 600;
+}
+
+.title-card-credit {
+  font-size: clamp(0.7rem, 1.3vw, 0.82rem);
+  font-weight: 300;
 }
 
 .play-area {
@@ -122,7 +191,7 @@ button {
 }
 
 .score-card,
-.word-card {
+.answer-card {
   border: 1px solid var(--line);
   border-radius: 6px;
   background: var(--surface);
@@ -135,13 +204,28 @@ button {
 }
 
 .score-label,
-.word-card span {
+.answer-card span {
   display: block;
-  color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  color: var(--ink);
+  font-size: clamp(0.74rem, 1.3vw, 0.9rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.instructions-card {
+  padding: 0 2px 4px;
+  width: max-content;
+  max-width: min(460px, calc(100vw - 32px));
+}
+
+.instructions-card p {
+  margin: 0 0 5px;
+  color: var(--ink);
+  font-size: 1.08rem;
+  font-weight: 400;
+  line-height: 1.25;
+  white-space: nowrap;
 }
 
 .score-card strong {
@@ -152,29 +236,16 @@ button {
   color: var(--ink);
 }
 
-.word-stack {
-  display: grid;
-  gap: 8px;
-}
-
-.word-card {
+.answer-card {
   padding: 13px 14px 12px;
+  text-align: center;
 }
 
-.word-card strong {
+.answer-card strong {
   display: block;
-  margin-top: 3px;
-  font-size: 1.45rem;
-  letter-spacing: 0.16em;
-}
-
-.word-card.solved {
-  border-color: rgba(106, 170, 100, 0.55);
-  background: #f0f7ef;
-}
-
-.word-card.solved strong {
-  color: var(--green-dark);
+  margin-top: 5px;
+  font-size: 1.1rem;
+  letter-spacing: 0.08em;
 }
 
 .controls {
@@ -186,10 +257,10 @@ button {
 .controls button {
   min-height: 42px;
   border: 1px solid var(--purple);
-  border-radius: 4px;
+  border-radius: 999px;
   background: var(--surface);
   color: var(--ink);
-  font-weight: 800;
+  font-weight: 400;
   cursor: pointer;
   transition:
     background-color 140ms ease,
@@ -410,6 +481,32 @@ button {
   color: var(--green-dark);
 }
 
+.puzzle-nav {
+  display: flex;
+  justify-content: center;
+}
+
+.puzzle-nav button {
+  min-width: 132px;
+  min-height: 42px;
+  border: 1px solid var(--ink);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 400;
+  cursor: pointer;
+  transition:
+    background-color 140ms ease,
+    color 140ms ease,
+    transform 140ms ease;
+}
+
+.puzzle-nav button:hover {
+  background: var(--ink);
+  color: var(--surface);
+  transform: translateY(-1px);
+}
+
 @keyframes solvedPulse {
   0% {
     transform: scale(1);
@@ -426,9 +523,11 @@ button {
 
 @media (max-width: 760px) {
   .topbar {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 8px;
+    min-height: 76px;
+  }
+
+  .title-card {
+    top: 76px;
   }
 
   .play-area {
@@ -456,19 +555,18 @@ button {
     padding-top: 24px;
   }
 
-  .intro {
-    margin-bottom: 20px;
+  .title-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
   }
 
-  .subhead {
-    display: none;
+  .title-card {
+    top: 92px;
   }
 
   .score-panel {
     grid-template-columns: 1fr;
   }
 
-  .word-stack {
-    grid-template-columns: 1fr 1fr;
-  }
 }

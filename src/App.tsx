@@ -8,32 +8,64 @@ type Square = {
   state: CellState;
   value: string | null;
 };
+type StartingLetter = Position & { value: string };
+type Puzzle = {
+  id: string;
+  targetWords: [string, string];
+  barriers: Position[];
+  startingLetters: StartingLetter[];
+};
 
 const BOARD_LENGTH = 4;
 const BOARD_HEIGHT = 5;
-const TARGET_WORDS = ["GOLF", "WORK"];
 const EMPTY_LABEL = "Open space";
 
-const BARRIERS: Position[] = [
-  { r: 1, c: 0 },
-  { r: 1, c: 2 },
-  { r: 1, c: 3 },
-  { r: 2, c: 0 },
-  { r: 2, c: 3 },
-  { r: 3, c: 0 },
-  { r: 3, c: 2 },
-  { r: 3, c: 3 },
-];
-
-const STARTING_LETTERS = [
-  { r: 0, c: 0, value: "G" },
-  { r: 0, c: 1, value: "L" },
-  { r: 0, c: 2, value: "O" },
-  { r: 0, c: 3, value: "F" },
-  { r: 4, c: 0, value: "O" },
-  { r: 4, c: 1, value: "W" },
-  { r: 4, c: 2, value: "R" },
-  { r: 4, c: 3, value: "K" },
+const PUZZLES: Puzzle[] = [
+  {
+    id: "golf-work",
+    targetWords: ["GOLF", "WORK"],
+    barriers: [
+      { r: 1, c: 0 },
+      { r: 1, c: 2 },
+      { r: 1, c: 3 },
+      { r: 2, c: 0 },
+      { r: 2, c: 3 },
+      { r: 3, c: 0 },
+      { r: 3, c: 2 },
+      { r: 3, c: 3 },
+    ],
+    startingLetters: [
+      { r: 0, c: 0, value: "G" },
+      { r: 0, c: 1, value: "L" },
+      { r: 0, c: 2, value: "O" },
+      { r: 0, c: 3, value: "F" },
+      { r: 4, c: 0, value: "O" },
+      { r: 4, c: 1, value: "W" },
+      { r: 4, c: 2, value: "R" },
+      { r: 4, c: 3, value: "K" },
+    ],
+  },
+  {
+    id: "star-moon",
+    targetWords: ["STAR", "MOON"],
+    barriers: [
+      { r: 1, c: 1 },
+      { r: 1, c: 2 },
+      { r: 2, c: 2 },
+      { r: 3, c: 1 },
+      { r: 3, c: 2 },
+    ],
+    startingLetters: [
+      { r: 0, c: 0, value: "T" },
+      { r: 0, c: 1, value: "S" },
+      { r: 0, c: 2, value: "A" },
+      { r: 0, c: 3, value: "R" },
+      { r: 4, c: 0, value: "M" },
+      { r: 4, c: 1, value: "O" },
+      { r: 4, c: 2, value: "N" },
+      { r: 4, c: 3, value: "O" },
+    ],
+  },
 ];
 
 const DIRECTIONS = {
@@ -49,16 +81,16 @@ function makeCell(state: CellState = "empty", value: string | null = null): Squa
   return { state, value };
 }
 
-function makeInitialBoard(): Square[][] {
+function makeInitialBoard(puzzle: Puzzle): Square[][] {
   const board = Array.from({ length: BOARD_HEIGHT }, () =>
     Array.from({ length: BOARD_LENGTH }, () => makeCell())
   );
 
-  BARRIERS.forEach(({ r, c }) => {
+  puzzle.barriers.forEach(({ r, c }) => {
     board[r][c] = makeCell("barrier");
   });
 
-  STARTING_LETTERS.forEach(({ r, c, value }) => {
+  puzzle.startingLetters.forEach(({ r, c, value }) => {
     board[r][c] = makeCell("filled", value);
   });
 
@@ -129,29 +161,33 @@ function getOpenNeighbors(board: Square[][], position: Position | null): Positio
     .filter((neighbor) => canSlide(board, position, neighbor));
 }
 
-function solveState(board: Square[][]) {
+function solveState(board: Square[][], targetWords: [string, string]) {
   const topWord = getWord(board, 0);
   const bottomWord = getWord(board, BOARD_HEIGHT - 1);
-  const topSolved = TARGET_WORDS.includes(topWord);
-  const bottomSolved = TARGET_WORDS.includes(bottomWord);
+  const topSolved = targetWords.includes(topWord);
+  const bottomSolved = targetWords.includes(bottomWord);
   const solved =
-    (topWord === TARGET_WORDS[0] && bottomWord === TARGET_WORDS[1]) ||
-    (topWord === TARGET_WORDS[1] && bottomWord === TARGET_WORDS[0]);
+    (topWord === targetWords[0] && bottomWord === targetWords[1]) ||
+    (topWord === targetWords[1] && bottomWord === targetWords[0]);
 
   return { topWord, bottomWord, topSolved, bottomSolved, solved };
 }
 
 export default function App() {
-  const [board, setBoard] = useState<Square[][]>(() => makeInitialBoard());
+  const [puzzleIndex, setPuzzleIndex] = useState(0);
+  const activePuzzle = PUZZLES[puzzleIndex];
+  const [board, setBoard] = useState<Square[][]>(() => makeInitialBoard(activePuzzle));
   const [moves, setMoves] = useState(0);
   const [selected, setSelected] = useState<Position | null>(null);
   const [cursor, setCursor] = useState<Position | null>(null);
   const [history, setHistory] = useState<Square[][][]>([]);
   const [message, setMessage] = useState("");
+  const [showTitleCard, setShowTitleCard] = useState(true);
+  const [titleCardLeaving, setTitleCardLeaving] = useState(false);
 
-  const { topWord, bottomWord, topSolved, bottomSolved, solved } = useMemo(
-    () => solveState(board),
-    [board]
+  const { topSolved, bottomSolved, solved } = useMemo(
+    () => solveState(board, activePuzzle.targetWords),
+    [activePuzzle.targetWords, board]
   );
 
   const openNeighbors = useMemo(
@@ -173,11 +209,11 @@ export default function App() {
     setCursor(to);
 
     setMessage(
-      solveState(nextBoard).solved
+      solveState(nextBoard, activePuzzle.targetWords).solved
         ? "Solved. Clean, clever, done."
-        : "Slide registered."
+        : ""
     );
-  }, [board, solved]);
+  }, [activePuzzle.targetWords, board, solved]);
 
   function selectCell(position: Position) {
     if (solved) return;
@@ -223,13 +259,48 @@ export default function App() {
   }
 
   function resetGame() {
-    setBoard(makeInitialBoard());
+    setBoard(makeInitialBoard(activePuzzle));
     setMoves(0);
     setSelected(null);
     setCursor(null);
     setHistory([]);
     setMessage("");
   }
+
+  function openPuzzle(nextPuzzleIndex: number) {
+    const nextPuzzle = PUZZLES[nextPuzzleIndex];
+
+    if (!nextPuzzle) return;
+
+    setPuzzleIndex(nextPuzzleIndex);
+    setBoard(makeInitialBoard(nextPuzzle));
+    setMoves(0);
+    setSelected(null);
+    setCursor(null);
+    setHistory([]);
+    setMessage("");
+  }
+
+  function startGame() {
+    setTitleCardLeaving(true);
+    window.setTimeout(() => {
+      setShowTitleCard(false);
+    }, 360);
+  }
+
+  const formattedDate = new Date().toLocaleDateString("en-US", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  useEffect(() => {
+    document.body.style.overflow = showTitleCard ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [showTitleCard]);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -300,42 +371,47 @@ export default function App() {
     <div className="App">
       <header className="topbar">
         <div className="brand-lockup">
-          <h1 className="title">Slidewise</h1>
+          <div className="title-row">
+            <h1 className="title">Slidewise</h1>
+            <time className="date">{formattedDate}</time>
+          </div>
+          <p className="creator">Created by Michelle Bartolotta</p>
         </div>
-        <time className="date">
-          {new Date().toLocaleDateString("en-US", {
-            month: "long",
-            day: "numeric",
-            year: "numeric",
-          })}
-        </time>
       </header>
 
       <main className="game-shell" aria-label="Slidewise letter puzzle">
-        <section className="intro" aria-label="Puzzle summary">
-          <p className="kicker">Daily letter slide</p>
-          <h2>Arrange the rails into two four-letter words.</h2>
-          <p className="subhead">
-            Every move matters. The best solve is the one that feels inevitable.
-          </p>
-        </section>
+        {showTitleCard && (
+          <section
+            className={titleCardLeaving ? "title-card leaving" : "title-card"}
+            aria-label="Slidewise start"
+          >
+            <div className="title-card-content">
+              <h2>Slidewise</h2>
+              <p className="title-card-tagline">Slide to create two four-letter words.</p>
+              <button type="button" onClick={startGame}>
+                Play
+              </button>
+              <div className="title-card-meta-group">
+                <p className="title-card-date">{formattedDate}</p>
+                <p className="title-card-credit">Created by Michelle Bartolotta</p>
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="play-area">
           <aside className="score-panel" aria-label="Puzzle status">
+            <div className="instructions-card" aria-label="Instructions">
+              <p>Click tiles or use arrow keys + Enter.</p>
+            </div>
+
             <div className="score-card">
               <span className="score-label">Slides</span>
               <strong>{moves}</strong>
             </div>
 
-            <div className="word-stack" aria-label="Current words">
-              <div className={topSolved ? "word-card solved" : "word-card"}>
-                <span>Top</span>
-                <strong>{topWord}</strong>
-              </div>
-              <div className={bottomSolved ? "word-card solved" : "word-card"}>
-                <span>Bottom</span>
-                <strong>{bottomWord}</strong>
-              </div>
+            <div className="answer-card" aria-label="Words to find">
+              <strong>{activePuzzle.targetWords.join(" / ")}</strong>
             </div>
 
             <div className="controls">
@@ -412,6 +488,18 @@ export default function App() {
             <p className={solved ? "status-message victory" : "status-message"}>
               {message}
             </p>
+
+            <div className="puzzle-nav">
+              {puzzleIndex === 0 ? (
+                <button type="button" onClick={() => openPuzzle(1)}>
+                  Next Puzzle
+                </button>
+              ) : (
+                <button type="button" onClick={() => openPuzzle(0)}>
+                  Back
+                </button>
+              )}
+            </div>
           </div>
         </section>
       </main>
