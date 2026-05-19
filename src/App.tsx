@@ -15,6 +15,7 @@ type Puzzle = {
   barriers: Position[];
   startingLetters: StartingLetter[];
 };
+type Theme = "light" | "dark" | "contrast";
 
 const BOARD_LENGTH = 4;
 const BOARD_HEIGHT = 5;
@@ -173,17 +174,29 @@ function solveState(board: Square[][], targetWords: [string, string]) {
   return { topWord, bottomWord, topSolved, bottomSolved, solved };
 }
 
+function blurActiveCell() {
+  if (document.activeElement instanceof HTMLElement) {
+    document.activeElement.blur();
+  }
+}
+
 export default function App() {
   const [puzzleIndex, setPuzzleIndex] = useState(0);
   const activePuzzle = PUZZLES[puzzleIndex];
   const [board, setBoard] = useState<Square[][]>(() => makeInitialBoard(activePuzzle));
-  const [moves, setMoves] = useState(0);
   const [selected, setSelected] = useState<Position | null>(null);
   const [cursor, setCursor] = useState<Position | null>(null);
   const [history, setHistory] = useState<Square[][][]>([]);
   const [message, setMessage] = useState("");
+  const [completedPuzzleIds, setCompletedPuzzleIds] = useState<Set<string>>(
+    () => new Set()
+  );
   const [showTitleCard, setShowTitleCard] = useState(true);
   const [titleCardLeaving, setTitleCardLeaving] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [accessibilityOpen, setAccessibilityOpen] = useState(true);
+  const [theme, setTheme] = useState<Theme>("light");
+  const [textScale, setTextScale] = useState(1);
 
   const { topSolved, bottomSolved, solved } = useMemo(
     () => solveState(board, activePuzzle.targetWords),
@@ -204,16 +217,22 @@ export default function App() {
 
     setHistory((previous) => [...previous, cloneBoard(board)]);
     setBoard(nextBoard);
-    setMoves((currentMoves) => currentMoves + 1);
     setSelected(keepSelected ? to : null);
     setCursor(to);
+    blurActiveCell();
 
-    setMessage(
-      solveState(nextBoard, activePuzzle.targetWords).solved
-        ? "Solved. Clean, clever, done."
-        : ""
-    );
-  }, [activePuzzle.targetWords, board, solved]);
+    const nextSolved = solveState(nextBoard, activePuzzle.targetWords).solved;
+
+    if (nextSolved) {
+      setCompletedPuzzleIds((previous) => {
+        const nextCompleted = new Set(previous);
+        nextCompleted.add(activePuzzle.id);
+        return nextCompleted;
+      });
+    }
+
+    setMessage(nextSolved ? "Solved. Clean, clever, done." : "");
+  }, [activePuzzle.id, activePuzzle.targetWords, board, solved]);
 
   function selectCell(position: Position) {
     if (solved) return;
@@ -242,7 +261,7 @@ export default function App() {
 
     if (cell.state === "filled") {
       setSelected(position);
-      setMessage("Choose an adjacent opening.");
+      setMessage("Choose an open tile");
     }
   }
 
@@ -252,7 +271,6 @@ export default function App() {
     const previousBoard = history[history.length - 1];
     setBoard(cloneBoard(previousBoard));
     setHistory((previous) => previous.slice(0, -1));
-    setMoves((currentMoves) => Math.max(0, currentMoves - 1));
     setSelected(null);
     setCursor(null);
     setMessage("Last slide undone.");
@@ -260,7 +278,6 @@ export default function App() {
 
   function resetGame() {
     setBoard(makeInitialBoard(activePuzzle));
-    setMoves(0);
     setSelected(null);
     setCursor(null);
     setHistory([]);
@@ -274,7 +291,6 @@ export default function App() {
 
     setPuzzleIndex(nextPuzzleIndex);
     setBoard(makeInitialBoard(nextPuzzle));
-    setMoves(0);
     setSelected(null);
     setCursor(null);
     setHistory([]);
@@ -293,6 +309,7 @@ export default function App() {
     day: "numeric",
     year: "numeric",
   });
+  const appClassName = ["App", `theme-${theme}`].join(" ");
 
   useEffect(() => {
     document.body.style.overflow = showTitleCard ? "hidden" : "";
@@ -326,7 +343,7 @@ export default function App() {
 
         if (board[activeCursor.r][activeCursor.c].state === "filled") {
           setSelected(activeCursor);
-          setMessage("Choose an adjacent opening.");
+          setMessage("Choose an open tile");
         }
 
         return;
@@ -368,8 +385,23 @@ export default function App() {
   }, [board, cursor, moveTile, selected, solved]);
 
   return (
-    <div className="App">
+    <div
+      className={appClassName}
+      style={{ "--text-scale": textScale } as CSSProperties}
+    >
       <header className="topbar">
+        <button
+          type="button"
+          className="menu-button"
+          onClick={() => setMenuOpen(true)}
+          aria-label="Open menu"
+          aria-expanded={menuOpen}
+        >
+          <span />
+          <span />
+          <span />
+        </button>
+
         <div className="brand-lockup">
           <div className="title-row">
             <h1 className="title">Slidewise</h1>
@@ -378,6 +410,79 @@ export default function App() {
           <p className="creator">Created by Michelle Bartolotta</p>
         </div>
       </header>
+
+      <div
+        className={menuOpen ? "menu-scrim open" : "menu-scrim"}
+        onClick={() => setMenuOpen(false)}
+        aria-hidden="true"
+      />
+      <aside className={menuOpen ? "settings-drawer open" : "settings-drawer"}>
+        <div className="drawer-header">
+          <h2>Menu</h2>
+          <button
+            type="button"
+            className="drawer-close"
+            onClick={() => setMenuOpen(false)}
+            aria-label="Close menu"
+          >
+            Close
+          </button>
+        </div>
+
+        <div className="drawer-row">
+          <span>Dark Mode</span>
+          <button
+            type="button"
+            className={theme === "dark" ? "toggle on" : "toggle"}
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+            aria-pressed={theme === "dark"}
+          >
+            <span />
+          </button>
+        </div>
+
+        <section className="drawer-section">
+          <button
+            type="button"
+            className="section-toggle"
+            onClick={() => setAccessibilityOpen((open) => !open)}
+            aria-expanded={accessibilityOpen}
+          >
+            <span>Accessibility Settings</span>
+            <span aria-hidden="true">{accessibilityOpen ? "-" : "+"}</span>
+          </button>
+
+          {accessibilityOpen && (
+            <div className="accessibility-panel">
+              <div className="drawer-row">
+                <span>High Contrast Mode</span>
+                <button
+                  type="button"
+                  className={theme === "contrast" ? "toggle on" : "toggle"}
+                  onClick={() =>
+                    setTheme(theme === "contrast" ? "light" : "contrast")
+                  }
+                  aria-pressed={theme === "contrast"}
+                >
+                  <span />
+                </button>
+              </div>
+
+              <label className="text-size-control">
+                <span>Text Size</span>
+                <input
+                  type="range"
+                  min="0.9"
+                  max="1.25"
+                  step="0.05"
+                  value={textScale}
+                  onChange={(event) => setTextScale(Number(event.target.value))}
+                />
+              </label>
+            </div>
+          )}
+        </section>
+      </aside>
 
       <main className="game-shell" aria-label="Slidewise letter puzzle">
         {showTitleCard && (
@@ -406,8 +511,10 @@ export default function App() {
             </div>
 
             <div className="score-card">
-              <span className="score-label">Slides</span>
-              <strong>{moves}</strong>
+              <span className="score-label">Puzzles Completed</span>
+              <strong>
+                {completedPuzzleIds.size}/{PUZZLES.length}
+              </strong>
             </div>
 
             <div className="answer-card" aria-label="Words to find">
