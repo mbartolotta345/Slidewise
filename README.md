@@ -1,11 +1,9 @@
 # Slidewise (React | TypeScript)
 
 A sliding-letter puzzle game built with **React + TypeScript + Vite**.  
-Players slide letter tiles to form two hidden words!
+Players slide letter tiles to form two hidden words
 
 **Play Now:** [https://mbartolotta345.github.io/Slidewise/](https://mbartolotta345.github.io/Slidewise/)
-
----
 
 ## Overview
 
@@ -20,8 +18,6 @@ You start with a 5×4 grid of letter and barrier blocks.
   <img src="screenshots/demo2.gif" alt="Slidewise Demo" width="500">
 </p>
 
----
-
 ## Features
 
 - **Dynamic grid logic:** each square tracks state (`empty`, `filled`, `barrier`)  
@@ -29,8 +25,6 @@ You start with a 5×4 grid of letter and barrier blocks.
 - **Win detection:** checks for correct words dynamically
 - **Responsive layout:** centered game board, GitHub Pages support
 - **Victory screen:** animated “Great Job!” message
-
----
 
 ## Future Iterations
 
