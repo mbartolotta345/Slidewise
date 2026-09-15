@@ -6,7 +6,6 @@ Players slide letter tiles to form two hidden words
 **Play Now:** [https://mbartolotta345.github.io/Slidewise/](https://mbartolotta345.github.io/Slidewise/)
 
 ## Overview
-
 **Slidewise** is inspired by word puzzles like *Wordle* and *NYT Connections*!
 You start with a 5×4 grid of letter and barrier blocks.
 
