@@ -22,13 +22,12 @@ You start with a 5×4 grid of letter and barrier blocks.
 - **Dynamic grid logic:** each square tracks state (`empty`, `filled`, `barrier`)  
 - **Move counter:** tracks the number of slides with a move counter
 - **Win detection:** checks for correct words dynamically
-- **Responsive layout:** centered game board, GitHub Pages support
+- **Keyboard Arrow Functionality:** opt for arrow keys over mouse clicks
+- **Accessibility Features:** dark mode and high contrast mode
 - **Victory screen:** animated “Great Job!” message
 
 ## Future Iterations
 
-- Add randomized starting boards and difficulties
-- Lose condition with limited amount of slide moves you can use  
-- Add animations for tile sliding
-- Barrier block connection through CSS 
+- Add randomized starting boards and difficulties (currently two versions)
+- Lose condition with limited amount of slide moves you can use 
 - Add sound effects
